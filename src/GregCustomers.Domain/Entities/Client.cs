@@ -13,7 +13,7 @@ public class Client
     public string? LogoFileName { get; private set; }
 
     private readonly List<Address> _addresses = new();
-    public IReadOnlyCollection<Address> Addresses => _addresses.AsReadOnly();
+    public IReadOnlyCollection<Address> Addresses => _addresses;
 
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }

@@ -27,8 +27,10 @@ public class GregCustomersDbContext : DbContext
             e.Property(x => x.CreatedAt);
             e.Property(x => x.UpdatedAt);
 
-            // lê o relacionamento (mesmo se escrita for por SP)
-            e.HasMany<Address>("_addresses")
+            // ✅ Aqui está a diferença:
+            e.Navigation(x => x.Addresses).UsePropertyAccessMode(PropertyAccessMode.Field);
+
+            e.HasMany(x => x.Addresses)
                 .WithOne()
                 .HasForeignKey(a => a.ClientId)
                 .OnDelete(DeleteBehavior.Cascade);
