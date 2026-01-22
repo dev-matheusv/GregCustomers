@@ -4,17 +4,11 @@ using MediatR;
 
 namespace GregCustomers.Application.Clients.Queries.GetClientById;
 
-public class GetClientByIdQueryHandler
-    : IRequestHandler<GetClientByIdQuery, ClientResponse?>
+public class GetClientByIdQueryHandler(IClientQueries queries) : IRequestHandler<GetClientByIdQuery, ClientResponse?>
 {
-    private readonly IClientQueries _queries;
-
-    public GetClientByIdQueryHandler(IClientQueries queries)
-        => _queries = queries;
-
     public async Task<ClientResponse?> Handle(GetClientByIdQuery request, CancellationToken ct)
     {
-        var client = await _queries.GetByIdAsync(request.Id, ct);
+        var client = await queries.GetByIdAsync(request.Id, ct);
 
         if (client is null)
             return null;

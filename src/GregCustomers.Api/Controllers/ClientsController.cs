@@ -13,44 +13,40 @@ namespace GregCustomers.Api.Controllers;
 
 [ApiController]
 [Route("api/clients")]
-public class ClientsController : ControllerBase
+public class ClientsController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public ClientsController(IMediator mediator) => _mediator = mediator;
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateClientRequest request, CancellationToken ct)
     {
-        var id = await _mediator.Send(new CreateClientCommand(request.Name, request.Email), ct);
+        var id = await mediator.Send(new CreateClientCommand(request.Name, request.Email), ct);
         return CreatedAtAction(nameof(GetById), new { id }, new { id });
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken ct)
     {
-        var client = await _mediator.Send(new GetClientByIdQuery(id), ct);
+        var client = await mediator.Send(new GetClientByIdQuery(id), ct);
         return client is null ? NotFound() : Ok(client);
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20, CancellationToken ct = default)
     {
-        var clients = await _mediator.Send(new GetClientsQuery(page, pageSize), ct);
+        var clients = await mediator.Send(new GetClientsQuery(page, pageSize), ct);
         return Ok(clients);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClientRequest request, CancellationToken ct)
     {
-        await _mediator.Send(new UpdateClientCommand(id, request.Name, request.Email), ct);
+        await mediator.Send(new UpdateClientCommand(id, request.Name, request.Email), ct);
         return NoContent();
     }
 
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {
-        await _mediator.Send(new DeleteClientCommand(id), ct);
+        await mediator.Send(new DeleteClientCommand(id), ct);
         return NoContent();
     }
     
@@ -69,7 +65,7 @@ public class ClientsController : ControllerBase
         using var ms = new MemoryStream();
         await logo.CopyToAsync(ms, ct);
 
-        await _mediator.Send(new UpdateClientLogoCommand(
+        await mediator.Send(new UpdateClientLogoCommand(
             id,
             ms.ToArray(),
             logo.ContentType,
@@ -82,7 +78,7 @@ public class ClientsController : ControllerBase
     [HttpGet("{id:guid}/logo")]
     public async Task<IActionResult> DownloadLogo(Guid id, CancellationToken ct)
     {
-        var result = await _mediator.Send(new GetClientLogoQuery(id), ct);
+        var result = await mediator.Send(new GetClientLogoQuery(id), ct);
 
         if (result is null)
             return NotFound();

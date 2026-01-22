@@ -3,21 +3,15 @@ using MediatR;
 
 namespace GregCustomers.Application.Clients.Commands.UpdateClient;
 
-public class UpdateClientCommandHandler
+public class UpdateClientCommandHandler(IClientCommands commands, IClientQueries queries)
     : IRequestHandler<UpdateClientCommand>
 {
-    private readonly IClientCommands _commands;
-
-    public UpdateClientCommandHandler(IClientCommands commands)
-        => _commands = commands;
-
     public async Task Handle(UpdateClientCommand request, CancellationToken ct)
     {
-        await _commands.UpdateAsync(
-            request.Id,
-            request.Name,
-            request.Email,
-            ct
-        );
+        var exists = await queries.GetByIdAsync(request.Id, ct);
+        if (exists is null)
+            throw new KeyNotFoundException("Client not found.");
+
+        await commands.UpdateAsync(request.Id, request.Name, request.Email, ct);
     }
 }

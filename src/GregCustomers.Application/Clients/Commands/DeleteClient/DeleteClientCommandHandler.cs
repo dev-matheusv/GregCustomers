@@ -3,16 +3,15 @@ using MediatR;
 
 namespace GregCustomers.Application.Clients.Commands.DeleteClient;
 
-public class DeleteClientCommandHandler
+public class DeleteClientCommandHandler(IClientCommands commands, IClientQueries queries)
     : IRequestHandler<DeleteClientCommand>
 {
-    private readonly IClientCommands _commands;
-
-    public DeleteClientCommandHandler(IClientCommands commands)
-        => _commands = commands;
-
     public async Task Handle(DeleteClientCommand request, CancellationToken ct)
     {
-        await _commands.DeleteAsync(request.Id, ct);
+        var exists = await queries.GetByIdAsync(request.Id, ct);
+        if (exists is null)
+            throw new KeyNotFoundException("Client not found.");
+
+        await commands.DeleteAsync(request.Id, ct);
     }
 }
