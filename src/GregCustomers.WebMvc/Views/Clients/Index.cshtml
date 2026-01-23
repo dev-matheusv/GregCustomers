@@ -1,32 +1,72 @@
 @model IEnumerable<GregCustomers.WebMvc.Models.ClientViewModel>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="m-0">Clientes</h2>
-        <a asp-action="Create" class="btn btn-success">+ Novo Cliente</a>
+@{
+    ViewData["Title"] = "Clientes";
+}
+
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div>
+            <h2 class="mb-0">Clientes</h2>
+            <small class="text-muted">Gerencie seus clientes e logotipos</small>
+        </div>
+
+        <a asp-action="Create" class="btn btn-success">
+            + Novo Cliente
+        </a>
     </div>
 
-    <table class="table table-striped align-middle">
-        <thead>
-        <tr>
-            <th style="width:45%">Nome</th>
-            <th style="width:45%">Email</th>
-            <th style="width:10%"></th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var c in Model)
-        {
-            <tr>
-                <td>@c.Name</td>
-                <td>@c.Email</td>
-                <td class="text-end">
-                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-primary">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-sm btn-outline-danger ms-1"
-                       onclick="return confirm('Confirma excluir?');">Excluir</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 45%;">Nome</th>
+                            <th style="width: 45%;">Email</th>
+                            <th class="text-end" style="width: 10%;">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">
+                                    Nenhum cliente encontrado. Clique em <b>Novo Cliente</b> para cadastrar.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var c in Model)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">@c.Name</td>
+                                    <td>@c.Email</td>
+                                    <td class="text-end">
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="Edit"
+                                               asp-route-id="@c.Id"
+                                               class="btn btn-sm btn-primary">
+                                                Editar
+                                            </a>
+
+                                            <a asp-action="Delete"
+                                               asp-route-id="@c.Id"
+                                               class="btn btn-sm btn-outline-danger"
+                                               onclick="return confirm('Tem certeza que deseja excluir este cliente?');">
+                                                Excluir
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
 </div>

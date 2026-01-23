@@ -1,25 +1,52 @@
 @model GregCustomers.WebMvc.Models.ClientViewModel
 
-<h2>Novo Cliente</h2>
+@{
+    ViewData["Title"] = "Novo Cliente";
+}
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div>
-        <label asp-for="Name"></label>
-        <input asp-for="Name" />
-        <span asp-validation-for="Name"></span>
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4 class="mb-0">Novo Cliente</h4>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Nome</label>
+                            <input asp-for="Name" class="form-control" placeholder="Ex: Matheus Vinicius" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label">E-mail</label>
+                            <input asp-for="Email" class="form-control" placeholder="exemplo@dominio.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Logotipo (opcional)</label>
+                            <input type="file" name="logo" class="form-control" accept="image/*" />
+                            <div class="form-text">PNG/JPG, qualquer tamanho (o backend valida se precisar).</div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
 
-    <div>
-        <label asp-for="Email"></label>
-        <input asp-for="Email" />
-        <span asp-validation-for="Email"></span>
-    </div>
-
-    <div>
-        <label>Logotipo</label>
-        <input type="file" name="logo" />
-    </div>
-
-    <button type="submit">Salvar</button>
-    <a asp-action="Index">Cancelar</a>
-</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
