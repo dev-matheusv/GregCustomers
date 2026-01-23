@@ -41,3 +41,7 @@ GO
 
 CREATE INDEX IX_Addresses_ClientId ON dbo.Addresses (ClientId);
 GO
+
+-- Um cliente não pode ter o mesmo logradouro duas vezes
+CREATE UNIQUE INDEX UX_Addresses_Client_Street ON dbo.Addresses (ClientId, Street);
+GO
