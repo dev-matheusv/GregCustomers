@@ -7,6 +7,7 @@ using GregCustomers.Application.Clients.Queries.GetClientById;
 using GregCustomers.Application.Clients.Queries.GetClients;
 using GregCustomers.Application.Clients.Queries.GetClientLogo;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GregCustomers.Api.Controllers;
@@ -15,6 +16,7 @@ namespace GregCustomers.Api.Controllers;
 [Route("api/clients")]
 public class ClientsController(IMediator mediator) : ControllerBase
 {
+    [Authorize(Roles = "admin")]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateClientRequest request, CancellationToken ct)
     {
@@ -35,7 +37,8 @@ public class ClientsController(IMediator mediator) : ControllerBase
         var clients = await mediator.Send(new GetClientsQuery(page, pageSize), ct);
         return Ok(clients);
     }
-
+    
+    [Authorize(Roles = "admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateClientRequest request, CancellationToken ct)
     {
@@ -43,6 +46,7 @@ public class ClientsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken ct)
     {
@@ -50,6 +54,7 @@ public class ClientsController(IMediator mediator) : ControllerBase
         return NoContent();
     }
     
+    [Authorize(Roles = "admin")]
     [HttpPost("{id:guid}/logo")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadLogo(Guid id, IFormFile? logo, CancellationToken ct)
