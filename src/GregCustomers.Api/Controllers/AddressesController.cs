@@ -5,6 +5,7 @@ using GregCustomers.Application.Clients.Addresses.Commands.UpdateAddress;
 using GregCustomers.Application.Clients.Addresses.Queries.GetAddressById;
 using GregCustomers.Application.Clients.Addresses.Queries.GetAddressesByClientId;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GregCustomers.Api.Controllers;
@@ -30,6 +31,7 @@ public class AddressesController(IMediator mediator) : ControllerBase
     }
 
     // POST /api/clients/{clientId}/addresses
+    [Authorize(Roles="admin")]
     [HttpPost("clients/{clientId:guid}/addresses")]
     public async Task<IActionResult> Create(Guid clientId, [FromBody] CreateAddressRequest request)
     {
@@ -38,6 +40,7 @@ public class AddressesController(IMediator mediator) : ControllerBase
     }
 
     // PUT /api/addresses/{id}
+    [Authorize(Roles="admin")]
     [HttpPut("addresses/{id:guid}")]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateAddressRequest request)
     {
@@ -46,6 +49,7 @@ public class AddressesController(IMediator mediator) : ControllerBase
     }
 
     // DELETE /api/addresses/{id}
+    [Authorize(Roles="admin")]
     [HttpDelete("addresses/{id:guid}")]
     public async Task<IActionResult> Delete(Guid id)
     {
