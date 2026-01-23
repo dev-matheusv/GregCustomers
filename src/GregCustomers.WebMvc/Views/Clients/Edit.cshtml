@@ -40,6 +40,86 @@
                             <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
                         </div>
                     </form>
+                    <hr />
+
+                    <hr class="my-4"/>
+
+                    <div class="card shadow-sm">
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <div>
+                                <h5 class="mb-0">Endereços</h5>
+                                <small class="text-muted">Gerencie os logradouros vinculados ao cliente</small>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+
+                            @if (TempData["Error"] is not null)
+                            {
+                                <div class="alert alert-danger mb-3">@TempData["Error"]</div>
+                            }
+                            @if (TempData["Success"] is not null)
+                            {
+                                <div class="alert alert-success mb-3">@TempData["Success"]</div>
+                            }
+
+                            <form asp-action="AddAddress" asp-route-id="@Model.Id" method="post" class="mb-3">
+                                @Html.AntiForgeryToken()
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-12 col-md-9">
+                                        <label class="form-label mb-1">Novo logradouro</label>
+                                        <input name="street" class="form-control" placeholder="Ex: Rua Exemplo, 123 - Centro" />
+                                    </div>
+                                    <div class="col-12 col-md-3 d-grid">
+                                        <button class="btn btn-success" type="submit">Adicionar</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            @if (!Model.Addresses.Any())
+                            {
+                                <div class="text-muted">Nenhum endereço cadastrado.</div>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                        <tr>
+                                            <th>Logradouro</th>
+                                            <th class="text-end" style="width: 260px;">Ações</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach (var a in Model.Addresses)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <form asp-action="UpdateAddress" method="post" class="d-flex gap-2">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="clientId" value="@Model.Id" />
+                                                        <input type="hidden" name="addressId" value="@a.Id" />
+                                                        <input name="street" class="form-control" value="@a.Street" />
+                                                        <button class="btn btn-primary" type="submit">Salvar</button>
+                                                    </form>
+                                                </td>
+                                                <td class="text-end">
+                                                    <form asp-action="DeleteAddress" method="post" class="d-inline"
+                                                          onsubmit="return confirm('Excluir este endereço?');">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="clientId" value="@Model.Id" />
+                                                        <input type="hidden" name="addressId" value="@a.Id" />
+                                                        <button class="btn btn-outline-danger" type="submit">Excluir</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
 

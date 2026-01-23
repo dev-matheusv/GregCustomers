@@ -68,13 +68,22 @@ public class ClientsController(IHttpClientFactory httpFactory) : Controller
         var client = httpFactory.CreateClient("ApiClient");
 
         var response = await client.GetAsync($"/api/clients/{id}");
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            return NotFound();
-
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync();
         var model = JsonSerializer.Deserialize<ClientViewModel>(json, _jsonOptions);
+
+        if (model is null)
+            return NotFound();
+
+        // carrega addresses do cliente
+        var addrResponse = await client.GetAsync($"/api/clients/{id}/addresses");
+        if (addrResponse.IsSuccessStatusCode)
+        {
+            var addrJson = await addrResponse.Content.ReadAsStringAsync();
+            var addresses = JsonSerializer.Deserialize<List<AddressViewModel>>(addrJson, _jsonOptions) ?? new();
+            model.Addresses = addresses;
+        }
 
         return View(model);
     }
@@ -108,7 +117,7 @@ public class ClientsController(IHttpClientFactory httpFactory) : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
+    
     public async Task<IActionResult> Delete(Guid id)
     {
         var client = httpFactory.CreateClient("ApiClient");
@@ -117,5 +126,81 @@ public class ClientsController(IHttpClientFactory httpFactory) : Controller
         response.EnsureSuccessStatusCode();
 
         return RedirectToAction(nameof(Index));
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AddAddress(Guid id, string street)
+    {
+        if (string.IsNullOrWhiteSpace(street))
+        {
+            TempData["Error"] = "Informe o logradouro.";
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        var api = httpFactory.CreateClient("ApiClient");
+
+        var content = new StringContent(
+            JsonSerializer.Serialize(new { street }),
+            Encoding.UTF8,
+            "application/json"
+        );
+
+        var response = await api.PostAsync($"/api/clients/{id}/addresses", content);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Não foi possível adicionar o endereço.";
+            return RedirectToAction(nameof(Edit), new { id });
+        }
+
+        TempData["Success"] = "Endereço adicionado.";
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateAddress(Guid clientId, Guid addressId, string street)
+    {
+        if (string.IsNullOrWhiteSpace(street))
+        {
+            TempData["Error"] = "Informe o logradouro.";
+            return RedirectToAction(nameof(Edit), new { id = clientId });
+        }
+
+        var client = httpFactory.CreateClient("ApiClient");
+
+        var content = new StringContent(
+            JsonSerializer.Serialize(new { street }),
+            Encoding.UTF8,
+            "application/json"
+        );
+
+        var response = await client.PutAsync($"/api/addresses/{addressId}", content);
+        if (!response.IsSuccessStatusCode)
+    {
+        TempData["Error"] = "Não foi possível atualizar o endereço.";
+        return RedirectToAction(nameof(Edit), new { clientId });
+    }
+
+    TempData["Success"] = "Endereço atualizado.";
+        return RedirectToAction(nameof(Edit), new { id = clientId });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteAddress(Guid clientId, Guid addressId)
+    {
+        var client = httpFactory.CreateClient("ApiClient");
+
+        var response = await client.DeleteAsync($"/api/addresses/{addressId}");
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Error"] = "Não foi possível remover o endereço.";
+            return RedirectToAction(nameof(Edit), new { clientId });
+        }
+
+        TempData["Success"] = "Endereço removido.";
+        return RedirectToAction(nameof(Edit), new { id = clientId });
     }
 }
