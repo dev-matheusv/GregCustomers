@@ -16,7 +16,14 @@ public class AuthController(IConfiguration config) : ControllerBase
     public IActionResult Login([FromBody] LoginRequest request)
     {
         // Auth simples (POC) - em produção usaria Identity/DB/Hash
-        if (request.Username != "admin" || request.Password != "admin123")
+        var (ok, role) = request switch
+        {
+            { Username: "admin",  Password: "admin123"  } => (true, "admin"),
+            { Username: "reader", Password: "reader123" } => (true, "reader"),
+            _ => (false, "")
+        };
+
+        if (!ok)
             return Unauthorized();
 
         var jwt = config.GetSection("Jwt");
@@ -29,7 +36,7 @@ public class AuthController(IConfiguration config) : ControllerBase
         {
             new(JwtRegisteredClaimNames.Sub, request.Username),
             new(ClaimTypes.Name, request.Username),
-            new(ClaimTypes.Role, "admin")
+            new(ClaimTypes.Role, role)
         };
 
         var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
