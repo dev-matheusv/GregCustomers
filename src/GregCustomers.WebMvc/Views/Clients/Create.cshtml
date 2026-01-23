@@ -1,0 +1,25 @@
+@model GregCustomers.WebMvc.Models.ClientViewModel
+
+<h2>Novo Cliente</h2>
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
+        <span asp-validation-for="Name"></span>
+    </div>
+
+    <div>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+
+    <div>
+        <label>Logotipo</label>
+        <input type="file" name="logo" />
+    </div>
+
+    <button type="submit">Salvar</button>
+    <a asp-action="Index">Cancelar</a>
+</form>

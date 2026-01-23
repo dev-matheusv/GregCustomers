@@ -1,27 +1,32 @@
 @model IEnumerable<GregCustomers.WebMvc.Models.ClientViewModel>
 
-<h2>Clientes</h2>
-<a asp-action="Create">Novo Cliente</a>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">Clientes</h2>
+        <a asp-action="Create" class="btn btn-success">+ Novo Cliente</a>
+    </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>Nome</th>
-        <th>Email</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var c in Model)
-    {
+    <table class="table table-striped align-middle">
+        <thead>
         <tr>
-            <td>@c.Name</td>
-            <td>@c.Email</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@c.Id">Editar</a> |
-                <a asp-action="Delete" asp-route-id="@c.Id">Excluir</a>
-            </td>
+            <th style="width:45%">Nome</th>
+            <th style="width:45%">Email</th>
+            <th style="width:10%"></th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Name</td>
+                <td>@c.Email</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-primary">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-sm btn-outline-danger ms-1"
+                       onclick="return confirm('Confirma excluir?');">Excluir</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
