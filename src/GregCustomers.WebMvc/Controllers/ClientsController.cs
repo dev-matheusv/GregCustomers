@@ -180,7 +180,7 @@ public class ClientsController(IHttpClientFactory httpFactory) : Controller
         if (!response.IsSuccessStatusCode)
     {
         TempData["Error"] = "Não foi possível atualizar o endereço.";
-        return RedirectToAction(nameof(Edit), new { clientId });
+        return RedirectToAction(nameof(Edit), new { id = clientId });
     }
 
     TempData["Success"] = "Endereço atualizado.";
@@ -197,7 +197,7 @@ public class ClientsController(IHttpClientFactory httpFactory) : Controller
         if (!response.IsSuccessStatusCode)
         {
             TempData["Error"] = "Não foi possível remover o endereço.";
-            return RedirectToAction(nameof(Edit), new { clientId });
+            return RedirectToAction(nameof(Edit), new { id = clientId });
         }
 
         TempData["Success"] = "Endereço removido.";
