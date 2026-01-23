@@ -5,5 +5,6 @@ namespace GregCustomers.Application.Abstractions.Persistence;
 public interface IAddressQueries
 {
     Task<Address?> GetByIdAsync(Guid id, CancellationToken ct);
-    Task<IReadOnlyList<Address>> GetByClientIdAsync(Guid clientId, CancellationToken ct);
+    //Task<IReadOnlyList<Address>> GetByClientIdAsync(Guid clientId, CancellationToken ct);
+    Task<IEnumerable<Address>> GetAllAddressesByClientId(Guid requestClientId, CancellationToken ct);
 }

@@ -4,17 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GregCustomers.Infrastructure.Persistence.Queries;
 
-public class AddressQueries : IAddressQueries
+public class AddressQueries(GregCustomersDbContext db) : IAddressQueries
 {
-    private readonly GregCustomersDbContext _db;
-
-    public AddressQueries(GregCustomersDbContext db) => _db = db;
-
     public Task<Address?> GetByIdAsync(Guid id, CancellationToken ct)
-        => _db.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id, ct);
+        => db.Addresses.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id, ct);
 
-    public async Task<IReadOnlyList<Address>> GetByClientIdAsync(Guid clientId, CancellationToken ct)
-        => await _db.Addresses.AsNoTracking()
+    public async Task<IEnumerable<Address>> GetAllAddressesByClientId(Guid clientId, CancellationToken ct)
+        => await db.Addresses.AsNoTracking()
             .Where(a => a.ClientId == clientId)
             .OrderBy(a => a.Street)
             .ToListAsync(ct);

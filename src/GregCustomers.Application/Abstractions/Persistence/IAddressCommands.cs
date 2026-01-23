@@ -6,3 +6,4 @@ public interface IAddressCommands
     Task UpdateAsync(Guid id, string street, CancellationToken ct);
     Task DeleteAsync(Guid id, CancellationToken ct);
 }
+

@@ -6,6 +6,7 @@ public class Address
     public Guid ClientId { get; private set; }
     public string Street { get; private set; } = default!;
 
+
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
 
@@ -16,7 +17,7 @@ public class Address
         Id = Guid.NewGuid();
         ClientId = clientId;
         SetStreet(street);
-
+        
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = CreatedAt;
     }
