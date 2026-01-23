@@ -1,0 +1,27 @@
+@model IEnumerable<GregCustomers.WebMvc.Models.ClientViewModel>
+
+<h2>Clientes</h2>
+<a asp-action="Create">Novo Cliente</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td>@c.Name</td>
+            <td>@c.Email</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@c.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@c.Id">Excluir</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

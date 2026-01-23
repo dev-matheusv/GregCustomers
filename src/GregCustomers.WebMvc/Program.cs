@@ -1,7 +1,18 @@
+using System.Net.Http.Headers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpClient("ApiClient", (sp, client) =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+
+    client.BaseAddress = new Uri(config["Api:BaseUrl"]!);
+    client.DefaultRequestHeaders.Authorization =
+        new AuthenticationHeaderValue("Bearer", config["Api:JwtToken"]);
+});
 
 var app = builder.Build();
 
